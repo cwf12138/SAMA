@@ -10,8 +10,8 @@ data:
         type: FusionDataset
         args:
             phase: test
-            anno_file: ./examplar_data_labels/LSVQ/labels_mytest.txt
-            data_prefix: PATH_TO_DATA/LSVQ
+            anno_file: ./examplar_data_labels/LSVQ/labels_test.txt
+            data_prefix: ../../datasets/LSVQ/
             sample_types:
                 fragments:
                     fragments_h: 7

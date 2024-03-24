@@ -13,7 +13,8 @@ import argparse
 import sys
 
 from scipy.stats import spearmanr, pearsonr
-from scipy.stats.stats import kendalltau as kendallr
+#from scipy.stats.stats import kendalltau as kendallr
+from scipy.stats import kendalltau as kendallr
 import numpy as np
 
 import timeit
@@ -56,8 +57,9 @@ def inference_set(inf_loader, model, device):
                 video[key] = data[key].to(device)
                 ## Reshape into clips
                 b, c, t, h, w = video[key].shape
-                video[key] = video[key].reshape(b, c, data["num_clips"][key], t // data["num_clips"][key], h, w).permute(0,2,1,3,4,5).reshape(b * data["num_clips"][key], c, t // data["num_clips"][key], h, w) 
-
+                num_clips = int(data["num_clips"][key].tolist()[0])
+                #video[key] = video[key].reshape(b, c, data["num_clips"][key], t // data["num_clips"][key], h, w).permute(0,2,1,3,4,5).reshape(b * data["num_clips"][key], c, t // data["num_clips"][key], h, w) 
+                video[key] = video[key].reshape(b, c,num_clips, t //num_clips, h, w).permute(0,2,1,3,4,5).reshape(b * num_clips, c, t // num_clips, h, w) 
         with torch.no_grad():
             result["pr_labels"] = model(video).cpu().numpy()
                 
@@ -100,10 +102,18 @@ def main():
     with open(args.opt, "r") as f:
         opt = yaml.safe_load(f)
     print(opt)
-    
+    #gpu_index = 1
+    #torch.cuda.set_device(gpu_index)
     ## adaptively choose the device
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-
+    #device = "cuda" if torch.cuda.is_available() else "cpu"
+     #   if torch.cuda.is_available():
+     #	device = torch.device("cuda",1)
+     #   else:
+     #	device = torch.device("cpu")
+    if torch.cuda.is_available():
+       device = torch.device("cuda:1")
+    else: 
+       device = torch.device("cpu") 
     if sys.gettrace():
         print('in DEBUGE mode.')
         opt["name"] = "DEBUG"
