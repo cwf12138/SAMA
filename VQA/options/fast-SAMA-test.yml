@@ -1,7 +1,7 @@
 
 name: SAMA-VQA-sama
-test_batch_size: 1
-test_num_workers: 2
+test_batch_size: 4
+test_num_workers: 8
 
 stype: sama  # [sama, sama-c, sama-mix, sama-swm, sama-spm, fragments==others]
 

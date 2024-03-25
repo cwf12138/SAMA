@@ -62,8 +62,8 @@ def inference_set(inf_loader, model, device):
                 video[key] = video[key].reshape(b, c,num_clips, t //num_clips, h, w).permute(0,2,1,3,4,5).reshape(b * num_clips, c, t // num_clips, h, w) 
         with torch.no_grad():
             result["pr_labels"] = model(video).cpu().numpy()
-                
-        result["gt_label"] = data["gt_label"].item()
+        result["gt_label"] = int(data["gt_label"].tolist()[0])        
+        #result["gt_label"] = data["gt_label"].item()
 
         results.append(result)
         
@@ -84,7 +84,8 @@ def inference_set(inf_loader, model, device):
     seconds = int((toc - tic) % 60)
 
     print(
-        f"For {len(gt_labels)} videos, \nthe accuracy of the model is as follows:\n  SROCC: {s:.4f} best: {best_s:.4f} \n  PLCC:  {p:.4f} best: {best_p:.4f}  \n  KROCC: {k:.4f} best: {best_k:.4f} \n  RMSE:  {r:.4f} best: {best_r:.4f}."
+       # f"For {len(gt_labels)} videos, \nthe accuracy of the model is as follows:\n  SROCC: {s:.4f} best: {best_s:.4f} \n  PLCC:  {p:.4f} best: {best_p:.4f}  \n  KROCC: {k:.4f} best: {best_k:.4f} \n  RMSE:  {r:.4f} best: {best_r:.4f}."
+        f"For {len(gt_labels)} videos, \nthe accuracy of the model is as follows:\n  SROCC: {s:.4f} \n  PLCC:  {p:.4f}  \n  KROCC: {k:.4f} \n  RMSE:  {r:.4f} "
     )
     print('time elapsed {:02d}m {:02d}s.'.format(minutes, seconds))
 
